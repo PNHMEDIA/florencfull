@@ -1,0 +1,2247 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ÚAN Praha Florenc - Moderní autobusové nádraží</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #12ac2c;
+            --primary-light: #16d436;
+            --primary-dark: #0e8522;
+            --white: #ffffff;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--gray-800);
+            font-feature-settings: 'cv11', 'ss01';
+            -webkit-font-smoothing: antialiased;
+            background: var(--white);
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0);
+            transition: all 0.3s ease;
+        }
+
+        .header.scrolled .location-bar {
+            display: none !important;
+        }
+
+        .header.scrolled {
+            left: 50%;
+            transform: translateX(-50%);
+            width: 98vw;
+            max-width: 1500px;
+            background: rgba(255,255,255,0.98);
+            border-radius: 18px;
+            box-shadow: 0 8px 40px rgba(16,185,129,0.13), 0 1.5px 8px rgba(0,0,0,0.07);
+            padding: 0 24px;
+            margin-top: 0;
+            top: 4px;
+        }
+
+        .location-bar {
+            background: var(--primary);
+            color: var(--white);
+            padding: 8px 0;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .location-bar .icon {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+            flex-shrink: 0;
+        }
+
+        .nav-line {
+            width: 90%;
+            height: 1px;
+            background: var(--primary);
+            margin: 0 auto;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 5%;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--gray-900);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: translateY(-2px);
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: var(--gray-700);
+            font-weight: 500;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            padding: 8px 16px;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .nav-menu a:hover, .nav-menu a.active {
+            color: var(--primary);
+            background: rgba(16, 185, 129, 0.05);
+            transform: translateY(-1px);
+        }
+
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-menu a.active::after {
+            width: 20px;
+        }
+
+        .language-switcher {
+            display: flex;
+            gap: 4px;
+            background: var(--gray-50);
+            border-radius: 8px;
+            padding: 4px;
+            border: 1px solid var(--gray-200);
+        }
+
+        .language-switcher button {
+            background: none;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--gray-600);
+        }
+
+        .language-switcher button.active {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .live-clock {
+            background: var(--gray-50);
+            color: var(--primary);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            border: 1px solid var(--gray-200);
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--gray-700);
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(0,0,0,0.95);
+            z-index: 10001;
+            animation: fadeInMobile 0.3s ease;
+        }
+
+        .mobile-nav.active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mobile-nav-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px 30px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .mobile-nav-menu {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .mobile-nav-menu a {
+            display: block;
+            padding: 16px 20px;
+            background: var(--gray-50);
+            border-radius: 12px;
+            text-decoration: none;
+            color: var(--gray-900);
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-nav-menu a:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .mobile-close {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* Streamlined Hero Section */
+        .hero {
+            height: 60vh;
+            background: url('https://images.pexels.com/photos/32422396/pexels-photo-32422396/free-photo-of-bustling-new-york-subway-platform-scene.jpeg?auto=compress&cs=tinysrgb&w=1200');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(16, 185, 129, 0.1));
+        }
+
+        .hero-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 5%;
+            position: relative;
+            z-index: 1;
+            color: var(--gray-900);
+            width: 100%;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: clamp(32px, 5vw, 56px);
+            font-weight: 900;
+            margin-bottom: 16px;
+            line-height: 1.1;
+            color: var(--gray-900);
+            font-feature-settings: 'ss01', 'cv01';
+            letter-spacing: -0.02em;
+        }
+
+        .hero p {
+            font-size: 18px;
+            margin-bottom: 32px;
+            line-height: 1.7;
+            font-weight: 400;
+            color: var(--gray-700);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+        }
+
+        .hero-btn {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+
+        .hero-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .hero-btn.secondary {
+            background: var(--white);
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .hero-btn.secondary:hover {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        /* Quick Stats Overview */
+        .stats-overview {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 32px;
+            margin: -60px auto 0;
+            position: relative;
+            z-index: 10;
+            max-width: 1200px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--gray-200);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            animation: slideUp 0.8s ease-out 0.3s both;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(40px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInMobile {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .stat-card {
+            background: var(--gray-50);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            border: 1px solid var(--gray-200);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.1);
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 900;
+            color: var(--primary);
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--gray-600);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .weather-stat {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .weather-stat .stat-value {
+            color: var(--white);
+        }
+
+        .weather-stat .stat-label {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Live Departures Section */
+        .departures-section {
+            padding: 80px 0;
+            background: var(--gray-50);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 5%;
+        }
+
+        .departures-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 48px;
+        }
+
+        .departures-main {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 40px;
+            border: 1px solid var(--gray-200);
+        }
+
+        .departures-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .departures-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--gray-900);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .live-indicator {
+            width: 12px;
+            height: 12px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { 
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            }
+            70% { 
+                transform: scale(1);
+                box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+            }
+            100% { 
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+            }
+        }
+
+        .btn-secondary {
+            background: var(--gray-50);
+            color: var(--gray-700);
+            border: 1px solid var(--gray-200);
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+        }
+
+        .departure-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            min-height: 400px;
+        }
+
+        .departure-item {
+            background: var(--gray-50);
+            border-radius: 12px;
+            padding: 28px;
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--primary);
+            cursor: pointer;
+        }
+
+        .departure-item:hover {
+            background: var(--white);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .departure-item.delayed {
+            border-left-color: #f59e0b;
+        }
+
+        .departure-item.cancelled {
+            border-left-color: #ef4444;
+        }
+
+        .departure-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .departure-route {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--gray-900);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .route-badge {
+            background: var(--primary);
+            color: var(--white);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .route-badge.flixbus {
+            background: #00d991;
+        }
+
+        .route-badge.regiojet {
+            background: #ffcc00;
+            color: #333;
+        }
+
+        .departure-time {
+            font-size: 32px;
+            font-weight: 900;
+            color: var(--primary);
+        }
+
+        .departure-time.delayed {
+            color: #f59e0b;
+        }
+
+        .departure-info {
+            display: flex;
+            gap: 24px;
+            font-size: 14px;
+            color: var(--gray-500);
+            font-weight: 500;
+            margin-bottom: 16px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .status-indicator.online {
+            background: var(--primary);
+        }
+
+        .status-indicator.delayed {
+            background: #f59e0b;
+        }
+
+        .departure-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .book-btn {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .book-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        /* Quick Actions Sidebar */
+        .quick-actions {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 40px;
+            border: 1px solid var(--gray-200);
+            height: fit-content;
+        }
+
+        .actions-header {
+            margin-bottom: 32px;
+        }
+
+        .actions-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--gray-900);
+            margin-bottom: 12px;
+        }
+
+        .action-button {
+            width: 100%;
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 16px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .action-button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .action-button.secondary {
+            background: var(--gray-50);
+            color: var(--gray-700);
+            border: 1px solid var(--gray-200);
+        }
+
+        .action-button.secondary:hover {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+
+        /* Search Section - Compact */
+        .search-section {
+            padding: 60px 0;
+            background: var(--white);
+        }
+
+        .search-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .search-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--gray-900);
+            margin-bottom: 12px;
+        }
+
+        .search-subtitle {
+            font-size: 16px;
+            color: var(--gray-600);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto;
+            gap: 20px;
+            align-items: end;
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--gray-50);
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid var(--gray-200);
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 8px;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--gray-200);
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: var(--white);
+            font-family: inherit;
+            font-weight: 500;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .search-btn {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 14px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            height: fit-content;
+            white-space: nowrap;
+        }
+
+        .search-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        /* Icons */
+        .icon {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+            flex-shrink: 0;
+        }
+
+        .icon-lg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+            flex-shrink: 0;
+        }
+
+        /* Loading States */
+        .loading-spinner {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(16, 185, 129, 0.3);
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-message {
+            color: var(--gray-600);
+            background: var(--gray-50);
+            padding: 48px;
+            border-radius: 12px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            border: 1px solid var(--gray-200);
+            font-weight: 500;
+        }
+
+        .error-message {
+            color: #dc2626;
+            background: #fef2f2;
+            padding: 24px;
+            border-radius: 8px;
+            border-left: 4px solid #dc2626;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Services Section */
+        .services-section {
+            padding: 80px 0;
+            background: var(--gray-50);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-size: 36px;
+            font-weight: 900;
+            color: var(--gray-900);
+            margin-bottom: 16px;
+            font-feature-settings: 'ss01', 'cv01';
+            letter-spacing: -0.01em;
+        }
+
+        .section-subtitle {
+            font-size: 18px;
+            color: var(--gray-600);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .service-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 32px;
+            text-align: center;
+            transition: all 0.4s ease;
+            border: 1px solid var(--gray-200);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--primary);
+            transform: translateX(-100%);
+            transition: transform 0.4s ease;
+        }
+
+        .service-card:hover::before {
+            transform: translateX(0);
+        }
+
+        .service-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--primary);
+            box-shadow: 0 16px 32px rgba(16, 185, 129, 0.1);
+        }
+
+        .service-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .service-card:hover .service-icon {
+            background: var(--primary-dark);
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .service-icon svg {
+            fill: white;
+        }
+
+        .service-card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--gray-900);
+        }
+
+        .service-card p {
+            color: var(--gray-600);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--gray-100);
+            color: var(--gray-700);
+            padding: 60px 0 30px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-section h4 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--gray-900);
+        }
+
+        .footer-section a {
+            color: var(--gray-600);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            transition: color 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        .footer-section a:hover {
+            color: var(--primary);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid var(--gray-300);
+            padding-top: 24px;
+            text-align: center;
+            color: var(--gray-500);
+            font-size: 13px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .departures-content {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+            
+            .search-form {
+                grid-template-columns: 1fr 1fr;
+                gap: 16px;
+            }
+
+            .stats-overview {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 16px;
+                padding: 24px;
+            }
+
+            .hero h1 {
+                font-size: clamp(28px, 6vw, 42px);
+            }
+
+            .section-title {
+                font-size: 28px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+            
+            .mobile-menu-toggle {
+                display: block;
+            }
+            
+            .search-form {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .stats-overview {
+                margin: -40px 4% 0;
+                padding: 20px;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+            
+            .services-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .hero-cta {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+
+            .hero-btn {
+                padding: 12px 20px;
+                font-size: 14px;
+                gap: 8px;
+                justify-content: center;
+            }
+
+            .nav {
+                padding: 0 4%;
+                height: 70px;
+            }
+
+            .container {
+                padding: 0 4%;
+            }
+
+            .hero {
+                background-attachment: scroll;
+                height: 50vh;
+            }
+
+            .hero h1 {
+                font-size: clamp(24px, 8vw, 36px);
+            }
+
+            .hero p {
+                font-size: 16px;
+            }
+
+            .search-title {
+                font-size: 24px;
+            }
+
+            .search-subtitle {
+                font-size: 14px;
+            }
+
+            .section-title {
+                font-size: 24px;
+            }
+
+            .section-subtitle {
+                font-size: 16px;
+            }
+
+            .departures-title {
+                font-size: 24px;
+            }
+
+            .departure-item {
+                padding: 20px;
+            }
+
+            .departure-route {
+                font-size: 16px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .departure-time {
+                font-size: 24px;
+            }
+
+            .departure-info {
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+
+            .departure-actions {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .quick-actions {
+                padding: 24px;
+            }
+
+            .service-card {
+                padding: 24px;
+            }
+
+            .service-icon {
+                width: 56px;
+                height: 56px;
+            }
+
+            .service-card h3 {
+                font-size: 18px;
+            }
+
+            .footer {
+                padding: 40px 0 20px;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+
+            .location-bar {
+                font-size: 12px;
+                padding: 6px 0;
+                flex-wrap: wrap;
+                gap: 4px;
+            }
+
+            .logo {
+                font-size: 20px;
+            }
+
+            .logo img {
+                height: 100px !important;
+            }
+
+            .live-clock {
+                font-size: 12px;
+                padding: 4px 8px;
+            }
+
+            .language-switcher {
+                padding: 2px;
+            }
+
+            .language-switcher button {
+                font-size: 10px;
+                padding: 4px 8px;
+            }
+
+            .header.scrolled {
+                width: 96vw;
+                padding: 0 16px;
+            }
+
+            .form-group input, .form-group select {
+                padding: 12px;
+                font-size: 16px;
+            }
+
+            .book-btn {
+                width: 100%;
+                padding: 12px 16px;
+                justify-content: center;
+            }
+
+            .hero-btn {
+                min-height: 44px;
+            }
+
+            .search-btn {
+                min-height: 44px;
+            }
+
+            .action-button {
+                min-height: 44px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-overview {
+                grid-template-columns: 1fr;
+                padding: 16px;
+            }
+
+            .hero-content {
+                padding: 0 4%;
+            }
+
+            .container {
+                padding: 0 3%;
+            }
+
+            .nav {
+                padding: 0 3%;
+            }
+
+            .logo img {
+                height: 80px !important;
+            }
+
+            .departure-info {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .info-item {
+                justify-content: space-between;
+            }
+        }
+
+        /* Animate on scroll */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s ease;
+        }
+
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        a {
+            text-decoration: none !important;
+        }
+
+        /* Better mobile scrolling */
+        @media (max-width: 768px) {
+            body {
+                -webkit-overflow-scrolling: touch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header" id="header">
+        <div class="location-bar">
+            <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12,2C15.31,2 18,4.66 18,7.95C18,12.41 12,19 12,19S6,12.41 6,7.95C6,4.66 8.69,2 12,2M12,6A2,2 0 0,0 10,8A2,2 0 0,0 12,10A2,2 0 0,0 14,8A2,2 0 0,0 12,6Z"/>
+            </svg>
+            Křižíkova 4, Praha 8 - Karlín
+            |
+            Otevřeno 24/7
+            |
+            <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M6.62,10.79C8.06,13.62 10.38,15.94 13.21,17.38L15.41,15.18C15.69,14.9 16.08,14.82 16.43,14.93C17.55,15.3 18.75,15.5 20,15.5A1,1 0 0,1 21,16.5V20A1,1 0 0,1 20,21A17,17 0 0,1 3,4A1,1 0 0,1 4,3H7.5A1,1 0 0,1 8.5,4C8.5,5.25 8.7,6.45 9.07,7.57C9.18,7.92 9.1,8.31 8.82,8.59L6.62,10.79Z"/>
+            </svg>
+            <a href="tel:+420221895555" style="color:inherit;text-decoration:underline; font-weight:500;">221 895 555</a>
+        </div>
+        
+        <div class="nav-line"></div>
+        <nav class="nav">
+            <a href="/" class="logo">
+                <img src="https://i.postimg.cc/QNywMRYx/Chat-GPT-Image-Jun-5-2025-at-10-35-29-AM.png" style="height: 140px;">
+            </a>
+            <ul class="nav-menu">
+                <li><a href="#stats" class="active">Přehled</a></li>
+                <li><a href="#departures">Odjezdy</a></li>
+                <li><a href="#search">Vyhledání</a></li>
+                <li><a href="#services">Služby</a></li>
+                <li><a href="#contact">Kontakt</a></li>
+            </ul>
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <div class="live-clock" id="live-clock">00:00</div>
+                <div class="language-switcher">
+                    <button class="active" onclick="switchLanguage('cs')">CZ</button>
+                    <button onclick="switchLanguage('en')">EN</button>
+                </div>
+                <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                    <svg class="icon-lg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z"/>
+                    </svg>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav" id="mobile-nav">
+        <div class="mobile-nav-content">
+            <h3 style="margin-bottom: 24px; font-size: 24px; font-weight: 700;">Menu</h3>
+            <ul class="mobile-nav-menu">
+                <li><a href="#stats" onclick="closeMobileMenu()">Přehled</a></li>
+                <li><a href="#departures" onclick="closeMobileMenu()">Odjezdy</a></li>
+                <li><a href="#search" onclick="closeMobileMenu()">Vyhledání</a></li>
+                <li><a href="#services" onclick="closeMobileMenu()">Služby</a></li>
+                <li><a href="#contact" onclick="closeMobileMenu()">Kontakt</a></li>
+            </ul>
+            <button class="mobile-close" onclick="closeMobileMenu()">Zavřít</button>
+        </div>
+    </div>
+
+    <main>
+        <!-- Streamlined Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1>ÚAN Praha Florenc</h1>
+                <p>Moderní autobusové nádraží v srdci Prahy. Spojení do celé Evropy s aktuálními informacemi.</p>
+                
+                <div class="hero-cta">
+                    <a href="#search" class="hero-btn">
+                        <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                        </svg>
+                        Vyhledat spoje
+                    </a>
+                    <a href="#departures" class="hero-btn secondary">
+                        <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+                        </svg>
+                        Aktuální odjezdy
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Stats Overview -->
+        <div class="container">
+            <section class="stats-overview" id="stats">
+                <div class="stat-card weather-stat">
+                    <span class="stat-value" id="weather-temp">22°C</span>
+                    <span class="stat-label" id="weather-desc">Jasno</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="active-lines">-</span>
+                    <span class="stat-label">aktivní linky</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="delayed-count">-</span>
+                    <span class="stat-label">zpoždění</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="ontime-percentage">-</span>
+                    <span class="stat-label">včas (%)</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value">6</span>
+                    <span class="stat-label">dopravců</span>
+                </div>
+            </section>
+        </div>
+
+        <!-- Live Departures Section -->
+        <section class="departures-section" id="departures">
+            <div class="container">
+                <div class="departures-content">
+                    <div class="departures-main animate-on-scroll">
+                        <div class="departures-header">
+                            <h2 class="departures-title">
+                                <div class="live-indicator"></div>
+                                Aktuální odjezdy
+                            </h2>
+                            <div>
+                                <a href="departures.html" class="btn-secondary">
+                                    Všechny odjezdy
+                                    <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"/>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="departure-list" id="departure-list">
+                            <div class="loading-message">
+                                <div class="loading-spinner"></div>
+                                Načítám aktuální odjezdy...
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="quick-actions animate-on-scroll">
+                        <div class="actions-header">
+                            <h3 class="actions-title">Rychlé akce</h3>
+                        </div>
+                        
+                        <button class="action-button" onclick="openTicketBooking()">
+                            <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M22 10V6c0-1.11-.89-2-2-2H4c-1.11 0-2 .89-2 2v4c1.11 0 2 .89 2 2s-.89 2-2 2v4c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2v-4c-1.11 0-2-.89-2-2s.89-2 2-2z"/>
+                            </svg>
+                            Koupit jízdenku
+                        </button>
+
+                        <button class="action-button secondary" onclick="showLuggageInfo()">
+                            <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M6,17A2,2 0 0,0 8,19H16A2,2 0 0,0 18,17V10A2,2 0 0,0 16,8H15V6A3,3 0 0,0 12,3A3,3 0 0,0 9,6V8H8A2,2 0 0,0 6,10V17M10.5,6A1.5,1.5 0 0,1 12,4.5A1.5,1.5 0 0,1 13.5,6V8H10.5V6Z"/>
+                            </svg>
+                            Úschovna zavazadel
+                        </button>
+
+                        <button class="action-button secondary" onclick="window.open('https://parkovistepraha.cz/florenc-dolni-nadrazi', '_blank')">
+                            <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M6,8.5H4.5V15h3V8.5M19,7H5A1,1 0 0,0 4,8V16A1,1 0 0,0 5,17H19A1,1 0 0,0 20,16V8A1,1 0 0,0 19,7Z"/>
+                            </svg>
+                            Parkování P+R
+                        </button>
+
+                        <button class="action-button secondary" onclick="showRestaurantInfo()">
+                            <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M8.1,13.34L3.91,9.16C2.35,7.59 2.35,5.06 3.91,3.5L10.93,10.5L8.1,13.34M14.88,11.53C16.28,12.92 16.28,15.18 14.88,16.57C13.49,17.96 11.23,17.96 9.84,16.57L7.03,13.76L8.1,12.69L9.84,14.43C10.54,15.13 11.68,15.13 12.38,14.43C13.08,13.73 13.08,12.59 12.38,11.89L10.64,10.15L11.71,9.08L14.88,11.53Z"/>
+                            </svg>
+                            Restaurace
+                        </button>
+
+                        <button class="action-button secondary" onclick="showWifiInfo()">
+                            <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M1,9L3,11C5.75,8.25 9.67,6.86 13.5,7.75L14,6.26C9.66,5.18 5.06,6.8 1,9M19,12L21,14C18.25,16.75 14.33,18.14 10.5,17.25L10,18.74C14.34,19.82 18.94,18.2 23,16L19,12M5,13L7,15C8.5,13.5 10.95,13.5 12.45,15L13,13.5C10.89,11.39 7.11,11.39 5,13M13,18A2,2 0 0,1 11,20A2,2 0 0,1 9,18A2,2 0 0,1 11,16A2,2 0 0,1 13,18Z"/>
+                            </svg>
+                            Free Wi-Fi
+                        </button>
+
+                        <button class="action-button secondary" onclick="showInfoCenter()">
+                            <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z"/>
+                            </svg>
+                            Informace
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Compact Search Section -->
+        <section class="search-section" id="search">
+            <div class="container">
+                <div class="search-header">
+                    <h2 class="search-title">Vyhledat spojení</h2>
+                    <p class="search-subtitle">Najděte nejlepší spoje do více než 150 destinací napříč Evropou</p>
+                </div>
+                
+                <form class="search-form" onsubmit="searchConnections(event)">
+                    <div class="form-group">
+                        <label for="from">Odkud</label>
+                        <select id="from" name="from" required>
+                            <option value="florenc" selected>ÚAN Praha Florenc</option>
+                            <option value="holesovice">Praha Holešovice</option>
+                            <option value="roztyly">Praha Roztyly</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="to">Kam</label>
+                        <input type="text" id="to" name="to" placeholder="Zadejte destinaci" list="cities" required>
+                        <datalist id="cities">
+                            <option value="Wien">
+                            <option value="Bratislava">
+                            <option value="Budapest">
+                            <option value="Berlin">
+                            <option value="München">
+                            <option value="Brno">
+                            <option value="Ostrava">
+                        </datalist>
+                    </div>
+                    <div class="form-group">
+                        <label for="datetime">Datum a čas</label>
+                        <input type="datetime-local" id="datetime" name="datetime" required>
+                    </div>
+                    <button type="submit" class="search-btn" id="search-btn">
+                        <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                        </svg>
+                        Vyhledat
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Services Section -->
+        <section class="services-section" id="services">
+            <div class="container">
+                <div class="section-header animate-on-scroll">
+                    <h2 class="section-title">Služby a vybavení</h2>
+                    <p class="section-subtitle">Kompletní služby pro pohodlné cestování na našem terminálu</p>
+                </div>
+                
+                <div class="services-grid">
+                    <div class="service-card animate-on-scroll" onclick="openTicketBooking()">
+                        <div class="service-icon">
+                            <svg class="icon-lg" viewBox="0 0 24 24" fill="white">
+                                <path d="M22 10V6c0-1.11-.89-2-2-2H4c-1.11 0-2 .89-2 2v4c1.11 0 2 .89 2 2s-.89 2-2 2v4c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2v-4c-1.11 0-2-.89-2-2s.89-2 2-2z"/>
+                            </svg>
+                        </div>
+                        <h3>Online jízdenky</h3>
+                        <p>Kupujte jízdenky online od všech dopravců. Rychle a pohodlně bez front.</p>
+                    </div>
+                    
+                    <div class="service-card animate-on-scroll" onclick="showLuggageInfo()">
+                        <div class="service-icon">
+                            <svg class="icon-lg" viewBox="0 0 24 24" fill="white">
+                                <path d="M6,17A2,2 0 0,0 8,19H16A2,2 0 0,0 18,17V10A2,2 0 0,0 16,8H15V6A3,3 0 0,0 12,3A3,3 0 0,0 9,6V8H8A2,2 0 0,0 6,10V17M10.5,6A1.5,1.5 0 0,1 12,4.5A1.5,1.5 0 0,1 13.5,6V8H10.5V6Z"/>
+                            </svg>
+                        </div>
+                        <h3>Úschovna zavazadel</h3>
+                        <p>Automatizovaná úschovna 24/7 s bezpečnostním systémem.</p>
+                    </div>
+                    
+                    <div class="service-card animate-on-scroll" onclick="window.open('https://parkovistepraha.cz/florenc-dolni-nadrazi', '_blank')">
+                        <div class="service-icon">
+                            <svg class="icon-lg" viewBox="0 0 24 24" fill="white">
+                                <path d="M6,8.5H4.5V15h3V8.5M19,7H5A1,1 0 0,0 4,8V16A1,1 0 0,0 5,17H19A1,1 0 0,0 20,16V8A1,1 0 0,0 19,7Z"/>
+                            </svg>
+                        </div>
+                        <h3>Parkování P+R</h3>
+                        <p>Bezpečné parkování s možností rezervace přímo u terminálu.</p>
+                    </div>
+
+                    <div class="service-card animate-on-scroll" onclick="showRestaurantInfo()">
+                        <div class="service-icon">
+                            <svg class="icon-lg" viewBox="0 0 24 24" fill="white">
+                                <path d="M8.1,13.34L3.91,9.16C2.35,7.59 2.35,5.06 3.91,3.5L10.93,10.5L8.1,13.34M14.88,11.53C16.28,12.92 16.28,15.18 14.88,16.57C13.49,17.96 11.23,17.96 9.84,16.57L7.03,13.76L8.1,12.69L9.84,14.43C10.54,15.13 11.68,15.13 12.38,14.43C13.08,13.73 13.08,12.59 12.38,11.89L10.64,10.15L11.71,9.08L14.88,11.53Z"/>
+                            </svg>
+                        </div>
+                        <h3>Restaurace a kavárny</h3>
+                        <p>Široký výběr restaurací a rychlého občerstvení pro všechny chutě.</p>
+                    </div>
+
+                    <div class="service-card animate-on-scroll" onclick="showWifiInfo()">
+                        <div class="service-icon">
+                            <svg class="icon-lg" viewBox="0 0 24 24" fill="white">
+                                <path d="M1,9L3,11C5.75,8.25 9.67,6.86 13.5,7.75L14,6.26C9.66,5.18 5.06,6.8 1,9M19,12L21,14C18.25,16.75 14.33,18.14 10.5,17.25L10,18.74C14.34,19.82 18.94,18.2 23,16L19,12M5,13L7,15C8.5,13.5 10.95,13.5 12.45,15L13,13.5C10.89,11.39 7.11,11.39 5,13M13,18A2,2 0 0,1 11,20A2,2 0 0,1 9,18A2,2 0 0,1 11,16A2,2 0 0,1 13,18Z"/>
+                            </svg>
+                        </div>
+                        <h3>Free Wi-Fi</h3>
+                        <p>Vysokorychlostní internet zdarma v celém terminálu.</p>
+                    </div>
+                    
+                    <div class="service-card animate-on-scroll" onclick="showInfoCenter()">
+                        <div class="service-icon">
+                            <svg class="icon-lg" viewBox="0 0 24 24" fill="white">
+                                <path d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,12 0 0,0 12,2M11,17H13V11H11V17Z"/>
+                            </svg>
+                        </div>
+                        <h3>Informační centrum</h3>
+                        <p>Profesionální informační služby, pomoc s orientací a turistické informace.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Autobusové nádraží</h4>
+                    <a href="#departures">Odjezdy a příjezdy</a>
+                    <a href="#search">Vyhledání spojení</a>
+                    <a href="#" onclick="openTicketBooking()">Online jízdenky</a>
+                    <a href="#">Dopravci</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Služby pro cestující</h4>
+                    <a href="#" onclick="showLuggageInfo()">Úschovna zavazadel</a>
+                    <a href="#" onclick="showRestaurantInfo()">Restaurace a kavárny</a>
+                    <a href="#">Obchody a služby</a>
+                    <a href="#">Bezbariérový přístup</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Parkování a doprava</h4>
+                    <a href="https://parkovistepraha.cz/florenc-dolni-nadrazi" target="_blank">Florenc P+R</a>
+                    <a href="#">Krátké stání</a>
+                    <a href="#">MHD spojení</a>
+                    <a href="#">Metro stanice Florenc</a>
+                </div>
+                <div class="footer-section" id="contact">
+                    <h4>Kontakt</h4>
+                    <a href="tel:+420221895555">
+                        <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.62,10.79C8.06,13.62 10.38,15.94 13.21,17.38L15.41,15.18C15.69,14.9 16.08,14.82 16.43,14.93C17.55,15.3 18.75,15.5 20,15.5A1,1 0 0,1 21,16.5V20A1,1 0 0,1 20,21A17,17 0 0,1 3,4A1,1 0 0,1 4,3H7.5A1,1 0 0,1 8.5,4C8.5,5.25 8.7,6.45 9.07,7.57C9.18,7.92 9.1,8.31 8.82,8.59L6.62,10.79Z"/>
+                        </svg>
+                        221 895 555
+                    </a>
+                    <a href="mailto:info@florenc.cz">
+                        <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M20,8L12,13L4,8V6L12,11L20,6M20,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6C22,4.89 21.1,4 20,4Z"/>
+                        </svg>
+                        info@florenc.cz
+                    </a>
+                    <a href="https://maps.google.cz/maps?q=autobusové+nádraží+praha+florenc" target="_blank">
+                        <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12,2C15.31,2 18,4.66 18,7.95C18,12.41 12,19 12,19S6,12.41 6,7.95C6,4.66 8.69,2 12,2M12,6A2,2 0 0,0 10,8A2,2 0 0,0 12,10A2,2 0 0,0 14,8A2,2 0 0,0 12,6Z"/>
+                        </svg>
+                        Křižíkova 4, Praha 8
+                    </a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 ÚAN Praha Florenc. Všechna práva vyhrazena.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // All the JavaScript remains the same as the original, just copying it here
+        let departuresData = [];
+        let lastUpdateTime = null;
+        const API_BASE_URL = window.location.origin;
+        let currentLanguage = 'cs';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeDateTime();
+            initializeAnimations();
+            initializeClock();
+            loadDepartures();
+            setupScrollEffects();
+            initializeWeather();
+            
+            setInterval(loadDepartures, 30000);
+        });
+
+        function switchLanguage(lang) {
+            currentLanguage = lang;
+            document.querySelectorAll('.language-switcher button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        function initializeClock() {
+            function updateClock() {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('cs-CZ', { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+                document.getElementById('live-clock').textContent = timeString;
+            }
+            
+            updateClock();
+            setInterval(updateClock, 1000);
+        }
+
+        function initializeWeather() {
+            const temps = [18, 19, 22, 21, 20, 23, 25];
+            const descriptions = ['Jasno', 'Polojasno', 'Oblačno', 'Slunečno'];
+            
+            const temp = temps[Math.floor(Math.random() * temps.length)];
+            const desc = descriptions[Math.floor(Math.random() * descriptions.length)];
+            
+            document.getElementById('weather-temp').textContent = `${temp}°C`;
+            document.getElementById('weather-desc').textContent = desc;
+        }
+
+        function initializeAnimations() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.animate-on-scroll').forEach(el => {
+                observer.observe(el);
+            });
+        }
+
+        function setupScrollEffects() {
+            const header = document.getElementById('header');
+            
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 100) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+        }
+
+        function initializeDateTime() {
+            const now = new Date();
+            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+            document.getElementById('datetime').value = now.toISOString().slice(0, 16);
+        }
+
+        function toggleMobileMenu() {
+            const mobileNav = document.getElementById('mobile-nav');
+            mobileNav.classList.toggle('active');
+        }
+
+        function closeMobileMenu() {
+            const mobileNav = document.getElementById('mobile-nav');
+            mobileNav.classList.remove('active');
+        }
+
+        async function loadDepartures() {
+            const departureList = document.getElementById('departure-list');
+            
+            try {
+                // Simulate API call with mock data
+                const mockDepartures = [
+                    {
+                        id: '1',
+                        route: 'Praha → Wien',
+                        departureTime: '14:30',
+                        platform: '3',
+                        carrier: 'FlixBus',
+                        lineNumber: 'FB101',
+                        status: 'ontime',
+                        delay: 0,
+                        price: 'od 450 Kč',
+                        duration: '4h 15m',
+                        seatsAvailable: '8',
+                        bookingUrl: 'https://global.flixbus.com',
+                        trackingUrl: '#'
+                    },
+                    {
+                        id: '2',
+                        route: 'Praha → Bratislava',
+                        departureTime: '15:15',
+                        platform: '1',
+                        carrier: 'RegioJet',
+                        lineNumber: 'RJ1005',
+                        status: 'delayed',
+                        delay: 10,
+                        price: 'od 290 Kč',
+                        duration: '4h 30m',
+                        seatsAvailable: '15',
+                        bookingUrl: 'https://www.regiojet.com',
+                        trackingUrl: '#'
+                    },
+                    {
+                        id: '3',
+                        route: 'Praha → Budapest',
+                        departureTime: '16:45',
+                        platform: '5',
+                        carrier: 'FlixBus',
+                        lineNumber: 'FB205',
+                        status: 'ontime',
+                        delay: 0,
+                        price: 'od 650 Kč',
+                        duration: '6h 45m',
+                        seatsAvailable: '22',
+                        bookingUrl: 'https://global.flixbus.com',
+                        trackingUrl: '#'
+                    },
+                    {
+                        id: '4',
+                        route: 'Praha → Berlin',
+                        departureTime: '17:30',
+                        platform: '2',
+                        carrier: 'LEO Express',
+                        lineNumber: 'LE804',
+                        status: 'ontime',
+                        delay: 0,
+                        price: 'od 890 Kč',
+                        duration: '4h 50m',
+                        seatsAvailable: '5',
+                        bookingUrl: 'https://www.leoexpress.com',
+                        trackingUrl: '#'
+                    },
+                    {
+                        id: '5',
+                        route: 'Praha → Brno',
+                        departureTime: '18:00',
+                        platform: '7',
+                        carrier: 'ČSAD',
+                        lineNumber: 'IC923',
+                        status: 'ontime',
+                        delay: 0,
+                        price: 'od 180 Kč',
+                        duration: '2h 30m',
+                        seatsAvailable: '12',
+                        bookingUrl: 'https://jizdnirady.idnes.cz/autobusy',
+                        trackingUrl: '#'
+                    }
+                ];
+
+                departuresData = mockDepartures;
+                renderDepartures(departuresData);
+                updateStats(mockDepartures);
+
+            } catch (error) {
+                console.error('Error loading departures:', error);
+                departureList.innerHTML = `
+                    <div class="error-message">
+                        Nepodařilo se načíst odjezdy. Zkuste to prosím později.
+                    </div>
+                `;
+            }
+        }
+
+        function renderDepartures(departures) {
+            const departureList = document.getElementById('departure-list');
+            
+            if (!departures || departures.length === 0) {
+                departureList.innerHTML = `
+                    <div class="error-message">
+                        Momentálně nejsou k dispozici žádné odjezdy.
+                    </div>
+                `;
+                return;
+            }
+
+            const departuresHtml = departures.map(departure => {
+                const statusClass = departure.status === 'delayed' ? 'delayed' : '';
+                const carrierClass = getCarrierClass(departure.carrier);
+                const statusText = departure.delay > 0 ? `Zpoždění ${departure.delay} min` : 'V čase';
+                const statusIndicator = departure.delay > 0 ? 'delayed' : 'online';
+                
+                return `
+                    <div class="departure-item ${statusClass}">
+                        <div class="departure-header">
+                            <div class="departure-route">
+                                <span class="route-badge ${carrierClass}">${departure.lineNumber || departure.carrier}</span>
+                                ${departure.route}
+                            </div>
+                            <div class="departure-time ${statusClass}">${departure.departureTime}</div>
+                        </div>
+                        <div class="departure-info">
+                            <div class="info-item">
+                                <span class="status-indicator ${statusIndicator}"></span>
+                                ${statusText}
+                            </div>
+                            <div class="info-item">
+                                <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12,2C15.31,2 18,4.66 18,7.95C18,12.41 12,19 12,19S6,12.41 6,7.95C6,4.66 8.69,2 12,2M12,6A2,2 0 0,0 10,8A2,2 0 0,0 12,10A2,2 0 0,0 14,8A2,2 0 0,0 12,6Z"/>
+                                </svg>
+                                Nástupiště ${departure.platform}
+                            </div>
+                            <div class="info-item">
+                                <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M15,8H16V4H15M13,8H14V4H13M11,8H12V4H11M9,8H10V4H9"/>
+                                </svg>
+                                ${departure.seatsAvailable} volných míst
+                            </div>
+                        </div>
+                        <div class="departure-actions">
+                            <button class="book-btn" onclick="window.open('${departure.bookingUrl}', '_blank')">
+                                <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z"/>
+                                </svg>
+                                Koupit jízdenku
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            departureList.innerHTML = departuresHtml;
+        }
+
+        function getCarrierClass(carrier) {
+            if (carrier.toLowerCase().includes('flixbus')) return 'flixbus';
+            if (carrier.toLowerCase().includes('regiojet')) return 'regiojet';
+            return '';
+        }
+
+        function updateStats(departures) {
+            const activeLines = departures.length;
+            const delayedCount = departures.filter(d => d.delay > 0).length;
+            const ontimeCount = departures.filter(d => d.status === 'ontime').length;
+            const ontimePercentage = departures.length > 0 ? Math.round((ontimeCount / departures.length) * 100) : 100;
+            
+            document.getElementById('active-lines').textContent = activeLines;
+            document.getElementById('delayed-count').textContent = delayedCount;
+            document.getElementById('ontime-percentage').textContent = ontimePercentage;
+        }
+
+        async function searchConnections(event) {
+            event.preventDefault();
+            alert('Funkce vyhledávání bude brzy dostupná. Pro nákup jízdenek použijte odkazy na dopravce.');
+        }
+
+        function openTicketBooking() {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.8);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: white; border-radius: 12px; padding: 40px; max-width: 500px; width: 90%;">
+                    <h3 style="margin-bottom: 24px; font-size: 24px; font-weight: 700; color: var(--gray-900);">Online jízdenky</h3>
+                    <p style="margin-bottom: 32px; color: var(--gray-600);">Vyberte dopravce pro nákup jízdenky:</p>
+                    
+                    <div style="display: grid; gap: 16px;">
+                        <a href="https://global.flixbus.com" target="_blank" 
+                           style="display: flex; align-items: center; gap: 16px; padding: 16px; border-radius: 8px; background: var(--gray-50); text-decoration: none; color: var(--gray-900); transition: all 0.3s ease;"
+                           onmouseover="this.style.background='var(--primary)'; this.style.color='white'"
+                           onmouseout="this.style.background='var(--gray-50)'; this.style.color='var(--gray-900)'">
+                            <div style="width: 48px; height: 48px; background: #00d991; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">FB</div>
+                            <div>
+                                <div style="font-weight: 600;">FlixBus</div>
+                                <div style="font-size: 14px; opacity: 0.7;">Evropské spoje</div>
+                            </div>
+                        </a>
+                        
+                        <a href="https://www.regiojet.com" target="_blank"
+                           style="display: flex; align-items: center; gap: 16px; padding: 16px; border-radius: 8px; background: var(--gray-50); text-decoration: none; color: var(--gray-900); transition: all 0.3s ease;"
+                           onmouseover="this.style.background='var(--primary)'; this.style.color='white'"
+                           onmouseout="this.style.background='var(--gray-50)'; this.style.color='var(--gray-900)'">
+                            <div style="width: 48px; height: 48px; background: #ffcc00; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #333; font-weight: bold;">RJ</div>
+                            <div>
+                                <div style="font-weight: 600;">RegioJet</div>
+                                <div style="font-size: 14px; opacity: 0.7;">Komfortní cestování</div>
+                            </div>
+                        </a>
+                        
+                        <a href="https://www.leoexpress.com" target="_blank"
+                           style="display: flex; align-items: center; gap: 16px; padding: 16px; border-radius: 8px; background: var(--gray-50); text-decoration: none; color: var(--gray-900); transition: all 0.3s ease;"
+                           onmouseover="this.style.background='var(--primary)'; this.style.color='white'"
+                           onmouseout="this.style.background='var(--gray-50)'; this.style.color='var(--gray-900)'">
+                            <div style="width: 48px; height: 48px; background: #003d82; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">LE</div>
+                            <div>
+                                <div style="font-weight: 600;">LEO Express</div>
+                                <div style="font-size: 14px; opacity: 0.7;">Luxusní autobusy</div>
+                            </div>
+                        </a>
+                    </div>
+                    
+                    <button onclick="this.parentElement.parentElement.remove()" 
+                            style="margin-top: 24px; width: 100%; padding: 12px; background: var(--gray-200); border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                        Zavřít
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.remove();
+            });
+        }
+
+        function showLuggageInfo() {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.8);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: white; border-radius: 12px; padding: 40px; max-width: 500px; width: 90%;">
+                    <h3 style="margin-bottom: 24px; font-size: 24px; font-weight: 700; color: var(--gray-900);">Úschovna zavazadel</h3>
+                    
+                    <div style="display: grid; gap: 16px; margin-bottom: 32px;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <svg style="width: 24px; height: 24px; fill: var(--primary);" viewBox="0 0 24 24">
+                                <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+                            </svg>
+                            <span><strong>Otevírací doba:</strong> 24/7</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <svg style="width: 24px; height: 24px; fill: var(--primary);" viewBox="0 0 24 24">
+                                <path d="M7,15H9C9,16.08 10.37,17 12,17C13.63,17 15,16.08 15,15C15,13.9 13.96,13.5 11.76,12.97C9.64,12.44 7,11.78 7,9C7,7.21 8.47,5.69 10.5,5.18V3H13.5V5.18C15.53,5.69 17,7.21 17,9H15C15,7.92 13.63,7 12,7C10.37,7 9,7.92 9,9C9,10.1 10.04,10.5 12.24,11.03C14.36,11.56 17,12.22 17,15C17,16.79 15.53,18.31 13.5,18.82V21H10.5V18.82C8.47,18.31 7,16.79 7,15Z"/>
+                            </svg>
+                            <span><strong>Cena:</strong> 50 Kč/první den, 30 Kč/další dny</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <svg style="width: 24px; height: 24px; fill: var(--primary);" viewBox="0 0 24 24">
+                                <path d="M12,2C15.31,2 18,4.66 18,7.95C18,12.41 12,19 12,19S6,12.41 6,7.95C6,4.66 8.69,2 12,2M12,6A2,2 0 0,0 10,8A2,2 0 0,0 12,10A2,2 0 0,0 14,8A2,2 0 0,0 12,6Z"/>
+                            </svg>
+                            <span><strong>Umístění:</strong> Hlavní hala, vedle informací</span>
+                        </div>
+                    </div>
+                    
+                    <button onclick="this.parentElement.parentElement.remove()" 
+                            style="width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                        Zavřít
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.remove();
+            });
+        }
+
+        function showRestaurantInfo() {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.8);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: white; border-radius: 12px; padding: 40px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto;">
+                    <h3 style="margin-bottom: 24px; font-size: 24px; font-weight: 700; color: var(--gray-900);">Restaurace a občerstvení</h3>
+                    
+                    <div style="display: grid; gap: 20px; margin-bottom: 32px;">
+                        <div style="border-left: 4px solid #FFC72C; padding-left: 16px;">
+                            <h4 style="font-weight: 600; margin-bottom: 8px;">McDonald's</h4>
+                            <p style="font-size: 14px; color: var(--gray-600);">Otevřeno: 6:00-24:00 | Hlavní hala</p>
+                        </div>
+                        
+                        <div style="border-left: 4px solid #E4002B; padding-left: 16px;">
+                            <h4 style="font-weight: 600; margin-bottom: 8px;">KFC</h4>
+                            <p style="font-size: 14px; color: var(--gray-600);">Otevřeno: 7:00-23:00 | 1. patro</p>
+                        </div>
+                        
+                        <div style="border-left: 4px solid #009639; padding-left: 16px;">
+                            <h4 style="font-weight: 600; margin-bottom: 8px;">Subway</h4>
+                            <p style="font-size: 14px; color: var(--gray-600);">Otevřeno: 6:30-22:00 | Hlavní hala</p>
+                        </div>
+                        
+                        <div style="border-left: 4px solid #00704A; padding-left: 16px;">
+                            <h4 style="font-weight: 600; margin-bottom: 8px;">Starbucks</h4>
+                            <p style="font-size: 14px; color: var(--gray-600);">Otevřeno: 5:30-22:30 | Hlavní hala</p>
+                        </div>
+                    </div>
+                    
+                    <button onclick="this.parentElement.parentElement.remove()" 
+                            style="width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                        Zavřít
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.remove();
+            });
+        }
+
+        function showWifiInfo() {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.8);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: white; border-radius: 12px; padding: 40px; max-width: 500px; width: 90%;">
+                    <h3 style="margin-bottom: 24px; font-size: 24px; font-weight: 700; color: var(--gray-900);">Free Wi-Fi FlorenC</h3>
+                    
+                    <div style="display: grid; gap: 16px; margin-bottom: 32px;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <svg style="width: 24px; height: 24px; fill: var(--primary);" viewBox="0 0 24 24">
+                                <path d="M1,9L3,11C5.75,8.25 9.67,6.86 13.5,7.75L14,6.26C9.66,5.18 5.06,6.8 1,9M19,12L21,14C18.25,16.75 14.33,18.14 10.5,17.25L10,18.74C14.34,19.82 18.94,18.2 23,16L19,12M5,13L7,15C8.5,13.5 10.95,13.5 12.45,15L13,13.5C10.89,11.39 7.11,11.39 5,13M13,18A2,2 0 0,1 11,20A2,2 0 0,1 9,18A2,2 0 0,1 11,16A2,2 0 0,1 13,18Z"/>
+                            </svg>
+                            <span><strong>Název sítě:</strong> "FlorenC_Free"</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <svg style="width: 24px; height: 24px; fill: var(--primary);" viewBox="0 0 24 24">
+                                <path d="M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1M10,17L6,13L7.41,11.59L10,14.17L16.59,7.58L18,9"/>
+                            </svg>
+                            <span><strong>Rychlost:</strong> až 100 Mbps</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <svg style="width: 24px; height: 24px; fill: var(--primary);" viewBox="0 0 24 24">
+                                <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+                            </svg>
+                            <span><strong>Časový limit:</strong> 4 hodiny</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <svg style="width: 24px; height: 24px; fill: var(--primary);" viewBox="0 0 24 24">
+                                <path d="M12,15C12.81,15 13.5,14.7 14.11,14.11C14.7,13.5 15,12.81 15,12C15,11.19 14.7,10.5 14.11,9.89C13.5,9.3 12.81,9 12,9C11.19,9 10.5,9.3 9.89,9.89C9.3,10.5 9,11.19 9,12C9,12.81 9.3,13.5 9.89,14.11C10.5,14.7 11.19,15 12,15M12,2C14.75,2 17.1,3 19.05,4.95C21,6.9 22,9.25 22,12V13.45C22,14.45 21.65,15.3 21,16C20.3,16.67 19.5,17 18.5,17C17.3,17 16.31,16.5 15.56,15.5C14.56,16.5 13.38,17 12,17C10.63,17 9.45,16.5 8.46,15.54C7.5,14.55 7,13.38 7,12C7,10.63 7.5,9.45 8.46,8.46C9.45,7.5 10.63,7 12,7C13.38,7 14.55,7.5 15.54,8.46C16.5,9.45 17,10.63 17,12V13.45C17,13.86 17.16,14.22 17.46,14.53C17.76,14.84 18.11,15 18.5,15C18.92,15 19.27,14.84 19.57,14.53C19.87,14.22 20,13.86 20,13.45V12C20,9.81 19.23,7.93 17.65,6.35C16.07,4.77 14.19,4 12,4C9.81,4 7.93,4.77 6.35,6.35C4.77,7.93 4,9.81 4,12C4,14.19 4.77,16.07 6.35,17.65C7.93,19.23 9.81,20 12,20H16V22H12C9.25,22 6.9,21 4.95,19.05C3,17.1 2,14.75 2,12C2,9.25 3,6.9 4.95,4.95C6.9,3 9.25,2 12,2Z"/>
+                            </svg>
+                            <span><strong>Registrace:</strong> Není potřeba</span>
+                        </div>
+                    </div>
+                    
+                    <div style="background: var(--gray-50); padding: 16px; border-radius: 8px; margin-bottom: 24px;">
+                        <p style="font-size: 14px; color: var(--gray-600);">
+                            <strong>Jak se připojit:</strong><br>
+                            1. Vyberte síť "FlorenC_Free"<br>
+                            2. Otevře se přihlašovací stránka<br>
+                            3. Klikněte na "Připojit zdarma"<br>
+                            4. Můžete surfovat 4 hodiny
+                        </p>
+                    </div>
+                    
+                    <button onclick="this.parentElement.parentElement.remove()" 
+                            style="width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                        Zavřít
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.remove();
+            });
+        }
+
+        function showInfoCenter() {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.8);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: white; border-radius: 12px; padding: 40px; max-width: 500px; width: 90%;">
+                    <h3 style="margin-bottom: 24px; font-size: 24px; font-weight: 700; color: var(--gray-900);">Informační centrum</h3>
+                    
+                    <div style="display: grid; gap: 16px; margin-bottom: 32px;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <svg style="width: 24px; height: 24px; fill: var(--primary);" viewBox="0 0 24 24">
+                                <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+                            </svg>
+                            <span><strong>Otevírací doba:</strong> 6:00-22:00</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <svg style="width: 24px; height: 24px; fill: var(--primary);" viewBox="0 0 24 24">
+                                <path d="M6.62,10.79C8.06,13.62 10.38,15.94 13.21,17.38L15.41,15.18C15.69,14.9 16.08,14.82 16.43,14.93C17.55,15.3 18.75,15.5 20,15.5A1,1 0 0,1 21,16.5V20A1,1 0 0,1 20,21A17,17 0 0,1 3,4A1,1 0 0,1 4,3H7.5A1,1 0 0,1 8.5,4C8.5,5.25 8.7,6.45 9.07,7.57C9.18,7.92 9.1,8.31 8.82,8.59L6.62,10.79Z"/>
+                            </svg>
+                            <span><strong>Telefon:</strong> 221 895 555</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <svg style="width: 24px; height: 24px; fill: var(--primary);" viewBox="0 0 24 24">
+                                <path d="M12,2C15.31,2 18,4.66 18,7.95C18,12.41 12,19 12,19S6,12.41 6,7.95C6,4.66 8.69,2 12,2M12,6A2,2 0 0,0 10,8A2,2 0 0,0 12,10A2,2 0 0,0 14,8A2,2 0 0,0 12,6Z"/>
+                            </svg>
+                            <span><strong>Umístění:</strong> Hlavní hala, vstup B</span>
+                        </div>
+                    </div>
+                    
+                    <div style="background: var(--gray-50); padding: 16px; border-radius: 8px; margin-bottom: 24px;">
+                        <p style="font-size: 14px; color: var(--gray-600); margin-bottom: 12px;"><strong>Služby:</strong></p>
+                        <ul style="font-size: 14px; color: var(--gray-600); margin-left: 16px;">
+                            <li>Informace o spojích a jízdních řádech</li>
+                            <li>Ztráty a nálezy</li>
+                            <li>Turistické informace o Praze</li>
+                            <li>Pomoc s orientací v terminálu</li>
+                            <li>Bezbariérový přístup</li>
+                        </ul>
+                    </div>
+                    
+                    <button onclick="this.parentElement.parentElement.remove()" 
+                            style="width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                        Zavřít
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.remove();
+            });
+        }
+
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    const offsetTop = target.offsetTop - 80;
+                    window.scrollTo({
+                        top: offsetTop,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
